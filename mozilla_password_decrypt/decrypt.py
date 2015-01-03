@@ -84,9 +84,9 @@ def decrypt_single(profile_path, encrypted):
                 raise PasswordDecryptionFailedException()
 
             decrypted = string_at(result.data, result.len)
-            nss.SECITEM_ZfreeItem(byref(result), PR_FALSE);
+            nss.SECITEM_ZfreeItem(byref(result), PR_FALSE)
             return decrypted
         finally:
-            nss.SECITEM_ZfreeItem(decoded, PR_TRUE);
+            nss.SECITEM_ZfreeItem(decoded, PR_TRUE)
     finally:
         nss.NSS_Shutdown()
