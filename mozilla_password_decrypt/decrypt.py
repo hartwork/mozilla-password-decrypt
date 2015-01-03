@@ -9,8 +9,9 @@
 #   retrieved from https://github.com/mozilla-services/services-central-legacy/blob/master/security/nss/cmd/pwdecrypt/pwdecrypt.c
 #   on 2015-01-02 21:00 UTC+1
 
-from ctypes import CDLL, Structure, c_char_p, c_int, byref, cast, POINTER, string_at, c_uint as c_enum
-
+from ctypes import c_uint as c_enum
+from ctypes import CDLL, POINTER, Structure, byref, c_char_p, c_int, cast, \
+    string_at
 
 SECSuccess = 0  # security/nss/lib/util/seccomon.h
 siBuffer = 0  # security/nss/lib/util/seccomon.h

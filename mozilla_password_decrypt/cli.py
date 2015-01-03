@@ -11,7 +11,9 @@ import sys
 from argparse import ArgumentParser
 from glob import glob
 
-from .decrypt import decrypt_single, NssInitializationFailedException, Base64DecodingFailedException, PasswordDecryptionFailedException, NssLinkingFailedException
+from .decrypt import Base64DecodingFailedException, \
+    NssInitializationFailedException, NssLinkingFailedException, \
+    PasswordDecryptionFailedException, decrypt_single
 
 
 def main():
