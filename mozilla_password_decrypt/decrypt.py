@@ -39,6 +39,9 @@ class MozillaPasswordDecryptException(BaseException):
 class NssInitializationFailedException(MozillaPasswordDecryptException):
     pass
 
+class NssLinkingFailedException(MozillaPasswordDecryptException):
+    pass
+
 class Base64DecodingFailedException(MozillaPasswordDecryptException):
     pass
 
@@ -47,7 +50,10 @@ class PasswordDecryptionFailedException(MozillaPasswordDecryptException):
 
 
 def decrypt_single(profile_path, encrypted):
-    nss = CDLL('libnss3.so')
+    try:
+        nss = CDLL('libnss3.so')
+    except OSError as e:
+        raise NssLinkingFailedException(e)
 
     rv = nss.NSS_Init(profile_path)
     if rv != SECSuccess:

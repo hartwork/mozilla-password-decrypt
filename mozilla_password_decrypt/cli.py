@@ -11,7 +11,7 @@ import sys
 from argparse import ArgumentParser
 from glob import glob
 
-from .decrypt import decrypt_single, NssInitializationFailedException, Base64DecodingFailedException, PasswordDecryptionFailedException
+from .decrypt import decrypt_single, NssInitializationFailedException, Base64DecodingFailedException, PasswordDecryptionFailedException, NssLinkingFailedException
 
 
 def main():
@@ -79,6 +79,9 @@ def main():
                 decrypted_password = decrypt_single(profile_path, encrypted_encoded)
             except NssInitializationFailedException:
                 print('NSS initialization failed for profile path "%s".' % profile_path, file=sys.stderr)
+                sys.exit(1)
+            except NssLinkingFailedException as e:
+                print('Dynamically linking to NSS failed: %s' % e, file=sys.stderr)
                 sys.exit(1)
             except Base64DecodingFailedException:
                 print('Base64 decoding failed (database "%s", id %d).' % (filename, _id), file=sys.stderr)
