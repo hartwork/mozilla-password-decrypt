@@ -1,4 +1,5 @@
 # Copyright (C) 2015 Sebastian Pipping <sebastian@pipping.org>
+# Copyright (C) 2015 "nyov" <nyov@nexnode.net>
 #
 # Licensed under MPL 1.1 / GPL 2.0 or later / LGPL 2.1 or later
 
@@ -57,8 +58,9 @@ def main():
     else:
         profiles_to_scan = []
         for pattern in (
-                os.path.expanduser('~/.mozilla/firefox/*.default/'),
-                os.path.expanduser('~/.thunderbird/*.default/'),
+                os.path.expanduser('~/.mozilla/*/*.*/'),
+                os.path.expanduser('~/.thunderbird/*.*/'),
+                os.path.expanduser('~/.icedove/*.*/'),
                 ):
             profiles_to_scan += glob(pattern)
 
