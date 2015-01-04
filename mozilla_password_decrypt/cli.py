@@ -18,7 +18,8 @@ from .decrypt import Base64DecodingFailedException, \
 
 def main():
     parser = ArgumentParser()
-    parser.add_argument('profile_paths', nargs='*', metavar='PATH', help='Profiles to analyze (default: auto detection)')
+    parser.add_argument('profile_paths', nargs='*', metavar='PATH',
+                        help='Profiles to analyze (default: auto detection)')
     options = parser.parse_args()
 
     if options.profile_paths:
@@ -51,10 +52,10 @@ def main():
 
         cursor = connection.execute('SELECT * FROM moz_logins;')
         for row in cursor.fetchall():
-            _id, _hostname, _httpRealm, _formSubmitURL, _usernameField, _passwordField, \
-                _encryptedUsername, _encryptedPassword, \
-                _guid, _encType, \
-                _timeCreated, _timeLastUsed, _timePasswordChanged, _timesUsed = \
+            _id, _hostname, _httpRealm, _formSubmitURL, _usernameField, \
+                _passwordField, _encryptedUsername, _encryptedPassword, \
+                _guid, _encType, _timeCreated, _timeLastUsed, \
+                _timePasswordChanged, _timesUsed = \
                 row
 
             entry = {
@@ -78,19 +79,24 @@ def main():
             encrypted_encoded = _encryptedPassword.encode('utf-8')
 
             try:
-                decrypted_password = decrypt_single(profile_path, encrypted_encoded)
+                decrypted_password = \
+                    decrypt_single(profile_path, encrypted_encoded)
             except NssInitializationFailedException:
-                print('NSS initialization failed for profile path "%s".' % profile_path, file=sys.stderr)
+                print('NSS initialization failed for profile path "%s".'
+                      % profile_path, file=sys.stderr)
                 sys.exit(1)
             except NssLinkingFailedException as e:
-                print('Dynamically linking to NSS failed: %s' % e, file=sys.stderr)
+                print('Dynamically linking to NSS failed: %s' % e,
+                      file=sys.stderr)
                 sys.exit(1)
             except Base64DecodingFailedException:
-                print('Base64 decoding failed (database "%s", id %d).' % (filename, _id), file=sys.stderr)
+                print('Base64 decoding failed (database "%s", id %d).'
+                      % (filename, _id), file=sys.stderr)
                 success = False
                 continue
             except PasswordDecryptionFailedException:
-                print('Password decryption failed (database "%s", id %d).' % (filename, _id), file=sys.stderr)
+                print('Password decryption failed (database "%s", id %d).'
+                      % (filename, _id), file=sys.stderr)
                 success = False
                 continue
 

@@ -66,7 +66,8 @@ def decrypt_single(profile_path, encrypted):
         raise NssInitializationFailedException()
 
     try:
-        decoded_orig = nss.NSSBase64_DecodeBuffer(None, None, encrypted, len(encrypted))
+        decoded_orig = nss.NSSBase64_DecodeBuffer(
+            None, None, encrypted, len(encrypted))
         if decoded_orig == 0:
             raise Base64DecodingFailedException()
 
