@@ -34,7 +34,7 @@ def main():
 
     details_of_profile = {}
     d = {
-        'version': 2,
+        'version': 3,
         'profiles': details_of_profile,
     }
     success = True
@@ -51,8 +51,8 @@ def main():
             print('%s (file "%s")' % (e, filename), file=sys.stderr)
             continue
 
-        output = []
-        details_of_profile[profile_path] = output
+        details_of_id = {}
+        details_of_profile[profile_path] = details_of_id
 
         cursor = connection.execute('SELECT * FROM moz_logins;')
         for row in cursor.fetchall():
@@ -63,7 +63,6 @@ def main():
                 row
 
             entry = {
-                'id': _id,
                 'hostname': _hostname,
                 'httpRealm': _httpRealm,
                 'formSubmitURL': _formSubmitURL,
@@ -78,7 +77,7 @@ def main():
                 'timePasswordChanged': _timePasswordChanged,
                 'timesUsed': _timesUsed,
             }
-            output.append(entry)
+            details_of_id[_id] = entry
 
             encrypted_encoded = _encryptedPassword.encode('utf-8')
 
