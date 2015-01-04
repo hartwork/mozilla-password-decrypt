@@ -27,6 +27,7 @@ class SECItem(Structure):  # security/nss/lib/util/seccomon.h
         ('len', c_int),
     ]
 
+
 class secuPWData(Structure):  # modules/libmar/sign/nss_secutil.h
     _fields_ = [
         ('source', c_enum),
@@ -37,14 +38,18 @@ class secuPWData(Structure):  # modules/libmar/sign/nss_secutil.h
 class MozillaPasswordDecryptException(BaseException):
     pass
 
+
 class NssInitializationFailedException(MozillaPasswordDecryptException):
     pass
+
 
 class NssLinkingFailedException(MozillaPasswordDecryptException):
     pass
 
+
 class Base64DecodingFailedException(MozillaPasswordDecryptException):
     pass
+
 
 class PasswordDecryptionFailedException(MozillaPasswordDecryptException):
     pass

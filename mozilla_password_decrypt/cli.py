@@ -41,7 +41,7 @@ def main():
             continue
 
         try:
-           connection = sqlite3.Connection(filename)
+            connection = sqlite3.Connection(filename)
         except sqlite3.OperationalError as e:
             print('%s (file "%s")' % (e, filename), file=sys.stderr)
             continue
@@ -52,26 +52,26 @@ def main():
         cursor = connection.execute('SELECT * FROM moz_logins;')
         for row in cursor.fetchall():
             _id, _hostname, _httpRealm, _formSubmitURL, _usernameField, _passwordField, \
-                    _encryptedUsername, _encryptedPassword, \
-                    _guid, _encType, \
-                    _timeCreated, _timeLastUsed, _timePasswordChanged, _timesUsed = \
-                    row
+                _encryptedUsername, _encryptedPassword, \
+                _guid, _encType, \
+                _timeCreated, _timeLastUsed, _timePasswordChanged, _timesUsed = \
+                row
 
             entry = {
-                    'id': _id,
-                    'hostname': _hostname,
-                    'httpRealm': _httpRealm,
-                    'formSubmitURL': _formSubmitURL,
-                    'usernameField': _usernameField,
-                    'passwordField': _passwordField,
-                    'encryptedUsername': _encryptedUsername,
-                    'encryptedPassword': _encryptedPassword,
-                    'guid': _guid,
-                    'encType': _encType,
-                    'timeCreated': _timeCreated,
-                    'timeLastUsed': _timeLastUsed,
-                    'timePasswordChanged': _timePasswordChanged,
-                    'timesUsed': _timesUsed,
+                'id': _id,
+                'hostname': _hostname,
+                'httpRealm': _httpRealm,
+                'formSubmitURL': _formSubmitURL,
+                'usernameField': _usernameField,
+                'passwordField': _passwordField,
+                'encryptedUsername': _encryptedUsername,
+                'encryptedPassword': _encryptedPassword,
+                'guid': _guid,
+                'encType': _encType,
+                'timeCreated': _timeCreated,
+                'timeLastUsed': _timeLastUsed,
+                'timePasswordChanged': _timePasswordChanged,
+                'timesUsed': _timesUsed,
             }
             output.append(entry)
 
