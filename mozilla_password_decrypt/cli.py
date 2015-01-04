@@ -32,7 +32,11 @@ def main():
                 ):
             profiles_to_scan += glob(pattern)
 
-    d = {}
+    details_of_profile = {}
+    d = {
+        'version': 2,
+        'profiles': details_of_profile,
+    }
     success = True
 
     for profile_path in profiles_to_scan:
@@ -48,7 +52,7 @@ def main():
             continue
 
         output = []
-        d[profile_path] = output
+        details_of_profile[profile_path] = output
 
         cursor = connection.execute('SELECT * FROM moz_logins;')
         for row in cursor.fetchall():
