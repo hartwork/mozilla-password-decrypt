@@ -71,11 +71,11 @@ def decrypt_single(profile_path, encrypted):
         if decoded_orig == 0:
             raise Base64DecodingFailedException()
 
-        decoded = cast(decoded_orig, POINTER(SECItem))
-        if decoded[0].len == 0:
-            raise Base64DecodingFailedException()
-
         try:
+            decoded = cast(decoded_orig, POINTER(SECItem))
+            if decoded[0].len == 0:
+                raise Base64DecodingFailedException()
+
             result = SECItem()
             result.type = siBuffer
             result.data = None
