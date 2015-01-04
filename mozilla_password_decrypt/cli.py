@@ -10,12 +10,36 @@ import os
 import sqlite3
 import sys
 from argparse import ArgumentParser
+from collections import namedtuple
 from glob import glob
 
 from .decrypt import (
     Base64DecodingFailedException, NssInitializationFailedException,
     NssLinkingFailedException, PasswordDecryptionFailedException,
     decrypt_single)
+
+
+MOZLOGIN = [  # Format of mozilla signons SQLite database
+    'id',
+    'hostname',
+    'httpRealm',
+    'formSubmitURL',
+    'usernameField',
+    'passwordField',
+    'encryptedUsername',
+    'encryptedPassword',
+    'guid',
+    'encType',
+    'timeCreated',
+    'timeLastUsed',
+    'timePasswordChanged',
+    'timesUsed',
+]
+MOZLOGIN.extend([  # non-db fields for decrypted values
+    'decryptedUsername',
+    'decryptedPassword',
+])
+MozLogin = namedtuple('MozillaLogin', MOZLOGIN)
 
 
 def main():
@@ -56,33 +80,16 @@ def main():
         details_of_id = {}
         details_of_profile[profile_path] = details_of_id
 
-        cursor = connection.execute('SELECT * FROM moz_logins;')
-        for row in cursor.fetchall():
-            _id, _hostname, _httpRealm, _formSubmitURL, _usernameField, \
-                _passwordField, _encryptedUsername, _encryptedPassword, \
-                _guid, _encType, _timeCreated, _timeLastUsed, \
-                _timePasswordChanged, _timesUsed = \
-                row
-
-            entry = {
-                'hostname': _hostname,
-                'httpRealm': _httpRealm,
-                'formSubmitURL': _formSubmitURL,
-                'usernameField': _usernameField,
-                'passwordField': _passwordField,
-                'encryptedUsername': _encryptedUsername,
-                'encryptedPassword': _encryptedPassword,
-                'guid': _guid,
-                'encType': _encType,
-                'timeCreated': _timeCreated,
-                'timeLastUsed': _timeLastUsed,
-                'timePasswordChanged': _timePasswordChanged,
-                'timesUsed': _timesUsed,
-            }
-            details_of_id[_id] = entry
-
-            encrypted_encoded = _encryptedPassword.encode('utf-8')
-
+        cursor = connection.execute('''
+            SELECT *
+            , "" AS decryptedUsername
+            , "" AS decryptedPassword
+            FROM moz_logins
+            ''')
+        for password_entry in map(MozLogin._make, cursor.fetchall()):
+            encrypted_encoded = \
+                password_entry.encryptedPassword.encode('utf-8')
+            decrypted_password = None
             try:
                 decrypted_password = \
                     decrypt_single(profile_path, encrypted_encoded)
@@ -105,7 +112,11 @@ def main():
                 success = False
                 continue
 
-            entry['decryptedPassword'] = decrypted_password
+            if decrypted_password:
+                password_entry = password_entry._replace(
+                    decryptedPassword=decrypted_password)
+
+            details_of_id[password_entry.id] = password_entry._asdict()
 
         connection.close()
 
