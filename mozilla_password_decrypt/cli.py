@@ -7,7 +7,6 @@ from __future__ import print_function
 import errno
 import json
 import os
-import sqlite3
 import sys
 from argparse import ArgumentParser
 from collections import namedtuple
@@ -41,6 +40,11 @@ MOZLOGIN.extend([  # non-db fields for decrypted values
 ])
 MozLogin = namedtuple('MozillaLogin', MOZLOGIN)
 
+try:
+    from sqlite3 import dbapi2 as sqlite
+except ImportError:
+    from pysqlite2 import dbapi2 as sqlite
+
 
 def main():
     parser = ArgumentParser()
@@ -72,8 +76,8 @@ def main():
             continue
 
         try:
-            connection = sqlite3.Connection(filename)
-        except sqlite3.OperationalError as e:
+            connection = sqlite.Connection(filename)
+        except sqlite.OperationalError as e:
             print('%s (file "%s")' % (e, filename), file=sys.stderr)
             continue
 
