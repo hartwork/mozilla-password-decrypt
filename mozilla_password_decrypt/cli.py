@@ -4,6 +4,7 @@
 
 from __future__ import print_function
 
+import errno
 import json
 import os
 import sqlite3
@@ -108,7 +109,11 @@ def main():
         connection.close()
 
     if d:
-        json.dump(d, sys.stdout, indent=4, sort_keys=True)
-        print()
+        try:
+            json.dump(d, sys.stdout, indent=4, sort_keys=True)
+            print()
+        except IOError as e:
+            if e.errno != errno.EPIPE:  # e.g. when hitting 'q' in less
+                raise
 
     sys.exit(int(not success))
