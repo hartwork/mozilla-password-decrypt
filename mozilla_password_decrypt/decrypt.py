@@ -13,6 +13,10 @@ from ctypes import c_uint as c_enum
 from ctypes import (
     CDLL, POINTER, Structure, byref, c_char_p, c_int, cast, string_at)
 
+from .errors import (
+    Base64DecodingError, NssInitializationError, NssLinkingError,
+    PasswordDecryptionError)
+
 SECSuccess = 0  # security/nss/lib/util/seccomon.h
 siBuffer = 0  # security/nss/lib/util/seccomon.h
 PR_TRUE = 1  # nsprpub/pr/include/prtypes.h
@@ -35,46 +39,26 @@ class secuPWData(Structure):  # modules/libmar/sign/nss_secutil.h
     ]
 
 
-class MozillaPasswordDecryptException(BaseException):
-    pass
-
-
-class NssInitializationFailedException(MozillaPasswordDecryptException):
-    pass
-
-
-class NssLinkingFailedException(MozillaPasswordDecryptException):
-    pass
-
-
-class Base64DecodingFailedException(MozillaPasswordDecryptException):
-    pass
-
-
-class PasswordDecryptionFailedException(MozillaPasswordDecryptException):
-    pass
-
-
 def decrypt_single(profile_path, encrypted):
     try:
         nss = CDLL('libnss3.so')
     except OSError as e:
-        raise NssLinkingFailedException(e)
+        raise NssLinkingError(e)
 
     rv = nss.NSS_Init(profile_path)
     if rv != SECSuccess:
-        raise NssInitializationFailedException()
+        raise NssInitializationError()
 
     try:
         decoded_orig = nss.NSSBase64_DecodeBuffer(
             None, None, encrypted, len(encrypted))
         if decoded_orig == 0:
-            raise Base64DecodingFailedException()
+            raise Base64DecodingError()
 
         try:
             decoded = cast(decoded_orig, POINTER(SECItem))
             if decoded[0].len == 0:
-                raise Base64DecodingFailedException()
+                raise Base64DecodingError()
 
             result = SECItem()
             result.type = siBuffer
@@ -87,7 +71,7 @@ def decrypt_single(profile_path, encrypted):
 
             rv = nss.PK11SDR_Decrypt(decoded, byref(result), byref(pwdata))
             if rv != SECSuccess:
-                raise PasswordDecryptionFailedException()
+                raise PasswordDecryptionError()
 
             decrypted = string_at(result.data, result.len)
             nss.SECITEM_ZfreeItem(byref(result), PR_FALSE)
