@@ -1,7 +1,7 @@
 all:
 
 isort:
-	isort --recursive -m 2 .
+	isort --recursive -m 4 .
 
 pep8:
 	which pep8 >/dev/null

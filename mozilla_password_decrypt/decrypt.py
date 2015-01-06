@@ -10,8 +10,8 @@
 #   on 2015-01-02 21:00 UTC+1
 
 from ctypes import c_uint as c_enum
-from ctypes import CDLL, POINTER, Structure, byref, c_char_p, c_int, cast, \
-    string_at
+from ctypes import (
+    CDLL, POINTER, Structure, byref, c_char_p, c_int, cast, string_at)
 
 SECSuccess = 0  # security/nss/lib/util/seccomon.h
 siBuffer = 0  # security/nss/lib/util/seccomon.h
