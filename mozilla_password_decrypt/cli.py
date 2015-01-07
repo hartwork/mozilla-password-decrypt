@@ -95,6 +95,7 @@ def main():
         for password_entry in map(MozLogin._make, cursor.fetchall()):
             for entryped_text, target_key in (
                     (password_entry.encryptedPassword, 'decryptedPassword'),
+                    (password_entry.encryptedUsername, 'decryptedUsername'),
                     ):
                 encrypted_text_encoded = entryped_text.encode('utf-8')
                 decrypted_text = None
