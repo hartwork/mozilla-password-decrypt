@@ -93,34 +93,36 @@ def main():
             FROM moz_logins
             ''')
         for password_entry in map(MozLogin._make, cursor.fetchall()):
-            encrypted_encoded = \
-                password_entry.encryptedPassword.encode('utf-8')
-            decrypted_password = None
-            try:
-                decrypted_password = \
-                    decrypt_single(profile_path, encrypted_encoded)
-            except NssInitializationFailedException:
-                print('NSS initialization failed for profile path "%s".'
-                      % profile_path, file=sys.stderr)
-                sys.exit(1)
-            except NssLinkingFailedException as e:
-                print('Dynamically linking to NSS failed: %s' % e,
-                      file=sys.stderr)
-                sys.exit(1)
-            except Base64DecodingFailedException:
-                print('Base64 decoding failed (database "%s", id %d).'
-                      % (filename, _id), file=sys.stderr)
-                success = False
-                continue
-            except PasswordDecryptionFailedException:
-                print('Password decryption failed (database "%s", id %d).'
-                      % (filename, _id), file=sys.stderr)
-                success = False
-                continue
+            for entryped_text, target_key in (
+                    (password_entry.encryptedPassword, 'decryptedPassword'),
+                    ):
+                encrypted_text_encoded = entryped_text.encode('utf-8')
+                decrypted_text = None
+                try:
+                    decrypted_text = \
+                        decrypt_single(profile_path, encrypted_text_encoded)
+                except NssInitializationFailedException:
+                    print('NSS initialization failed for profile path "%s".'
+                          % profile_path, file=sys.stderr)
+                    sys.exit(1)
+                except NssLinkingFailedException as e:
+                    print('Dynamically linking to NSS failed: %s' % e,
+                        file=sys.stderr)
+                    sys.exit(1)
+                except Base64DecodingFailedException:
+                    print('Base64 decoding failed (database "%s", id %d).'
+                          % (filename, _id), file=sys.stderr)
+                    success = False
+                    continue
+                except PasswordDecryptionFailedException:
+                    print('Password decryption failed (database "%s", id %d).'
+                          % (filename, _id), file=sys.stderr)
+                    success = False
+                    continue
 
-            if decrypted_password:
-                password_entry = password_entry._replace(
-                    decryptedPassword=decrypted_password)
+                if decrypted_text:
+                    kvargs = {target_key: decrypted_text}
+                    password_entry = password_entry._replace(**kvargs)
 
             details_of_id[password_entry.id] = password_entry._asdict()
 
