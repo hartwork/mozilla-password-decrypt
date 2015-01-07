@@ -66,7 +66,7 @@ def main():
 
     details_of_profile = {}
     d = {
-        'version': 3,
+        'version': 4,
         'profiles': details_of_profile,
     }
     success = True
