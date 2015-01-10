@@ -1,3 +1,4 @@
+#! /usr/bin/env python
 # Copyright (C) 2015 "nyov" <nyov@nexnode.net>
 # Copyright (C) 2015 Sebastian Pipping <sebastian@pipping.org>
 #
