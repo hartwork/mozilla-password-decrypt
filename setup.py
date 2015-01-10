@@ -1,3 +1,7 @@
+# Copyright (C) 2015 "nyov" <nyov@nexnode.net>
+#
+# Licensed under MPL 1.1 / GPL 2.0 or later / LGPL 2.1 or later
+
 from os.path import dirname, join
 from setuptools import find_packages, setup
 
