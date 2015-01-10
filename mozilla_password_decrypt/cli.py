@@ -17,6 +17,7 @@ from .errors import (
     Base64DecodingError, NssInitializationError, NssLinkingError,
     PasswordDecryptionError)
 from .decrypt import decrypt_single
+from .version import VERSION_STR
 
 
 MOZLOGIN = [  # Format of mozilla signons SQLite database
@@ -51,6 +52,7 @@ def main():
     parser = ArgumentParser()
     parser.add_argument('profile_paths', nargs='*', metavar='PATH',
                         help='Profiles to analyze (default: auto detection)')
+    parser.add_argument('--version', action='version', version='%(prog)s ' + VERSION_STR)
     options = parser.parse_args()
 
     if options.profile_paths:
