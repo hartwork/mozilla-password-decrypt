@@ -1,19 +1,19 @@
 # Copyright (C) 2015 "nyov" <nyov@nexnode.net>
+# Copyright (C) 2015 Sebastian Pipping <sebastian@pipping.org>
 #
 # Licensed under MPL 1.1 / GPL 2.0 or later / LGPL 2.1 or later
 
 from os.path import dirname, join
 from setuptools import find_packages, setup
 
+from mozilla_password_decrypt.version import VERSION_STR
 
 description = 'Mozilla password decryptor'
 long_description = description
-with open(join(dirname(__file__), 'mozilla_password_decrypt/VERSION'), 'rb') as f:
-    version = f.read().decode('ascii').strip()
 
 setup_args = {
     'name': 'mozilla-password-decrypt',
-    'version': version,
+    'version': VERSION_STR,
     'url': 'https://github.com/hartwork/mozilla-password-decrypt',
     'description': description,
     'long_description': long_description,
