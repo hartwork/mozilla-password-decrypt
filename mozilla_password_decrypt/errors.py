@@ -8,7 +8,7 @@ class MozillaPasswordsException(Exception):
 
 
 class NssLinkingError(MozillaPasswordsException):
-    """Indicates a failure to find the NSS library"""
+    """Indicates a failure to dynamically link to the NSS library"""
     pass
 
 
@@ -18,8 +18,10 @@ class NssInitializationError(MozillaPasswordsException):
 
 
 class Base64DecodingError(MozillaPasswordsException):
+    """Indicates a failure to decode Base64"""
     pass
 
 
 class PasswordDecryptionError(MozillaPasswordsException):
+    """Indicates a failure to decrypt decoded Base64"""
     pass
