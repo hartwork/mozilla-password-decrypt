@@ -13,10 +13,10 @@ from argparse import ArgumentParser
 from collections import namedtuple
 from glob import glob
 
-from .decrypt import (
-    Base64DecodingFailedException, NssInitializationFailedException,
-    NssLinkingFailedException, PasswordDecryptionFailedException,
-    decrypt_single)
+from .errors import (
+    Base64DecodingError, NssInitializationError, NssLinkingError,
+    PasswordDecryptionError)
+from .decrypt import decrypt_single
 
 
 MOZLOGIN = [  # Format of mozilla signons SQLite database
@@ -102,20 +102,20 @@ def main():
                 try:
                     decrypted_text = \
                         decrypt_single(profile_path, encrypted_text_encoded)
-                except NssInitializationFailedException:
+                except NssInitializationError:
                     print('NSS initialization failed for profile path "%s".'
                           % profile_path, file=sys.stderr)
                     sys.exit(1)
-                except NssLinkingFailedException as e:
+                except NssLinkingError as e:
                     print('Dynamically linking to NSS failed: %s' % e,
                         file=sys.stderr)
                     sys.exit(1)
-                except Base64DecodingFailedException:
+                except Base64DecodingError:
                     print('Base64 decoding failed (database "%s", id %d).'
                           % (filename, _id), file=sys.stderr)
                     success = False
                     continue
-                except PasswordDecryptionFailedException:
+                except PasswordDecryptionError:
                     print('Password decryption failed (database "%s", id %d).'
                           % (filename, _id), file=sys.stderr)
                     success = False
